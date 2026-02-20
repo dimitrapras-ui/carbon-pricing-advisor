@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Carbon Price Recommendation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f7fafc;
+            padding: 40px 20px;
+            color: #2d3748;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        /* HEADER */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        /* CORE RECOMMENDATION CARD */
+        .recommendation-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        }
+        
+        .price-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .price-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .price-amount {
+            font-size: 64px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .price-escalation {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .rationale {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .rationale h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+        
+        .rationale p {
+            line-height: 1.7;
+            font-size: 15px;
+        }
+        
+        .reality-check {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #fbbf24;
+        }
+        
+        .reality-check h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .reality-check p {
+            line-height: 1.7;
+            font-size: 15px;
+        }
+        
+        /* MODULE CARDS */
+        .module {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .module:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .module-header {
+            padding: 20px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s;
+        }
+        
+        .module-header:hover {
+            background: #f7fafc;
+        }
+        
+        .module-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .module-icon {
+            font-size: 24px;
+        }
+        
+        .expand-icon {
+            font-size: 20px;
+            color: #a0aec0;
+            transition: transform 0.3s;
+        }
+        
+        .module.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        .module-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .module.expanded .module-content {
+            max-height: 3000px;
+        }
+        
+        .module-body {
+            padding: 25px;
+        }
+        
+        /* SECTIONS WITHIN MODULES */
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .scenario-card {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .scenario-card h4 {
+            font-size: 14px;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        
+        .scenario-card p {
+            font-size: 13px;
+            color: #718096;
+            line-height: 1.6;
+        }
+        
+        .timeline-item {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 3px solid #48bb78;
+        }
+        
+        .timeline-item h4 {
+            font-size: 15px;
+            color: #2d3748;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .timeline-item p {
+            font-size: 13px;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+        
+        .risk-flag {
+            background: #fff5f5;
+            border-left: 3px solid #f56565;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .risk-flag.medium {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+        
+        .risk-flag.low {
+            background: #f0fdf4;
+            border-left-color: #10b981;
+        }
+        
+        .risk-flag h4 {
+            font-size: 14px;
+            color: #1a202c;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .risk-flag p {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        
+        .risk-flag .mitigation {
+            font-size: 13px;
+            color: #059669;
+            font-weight: 500;
+        }
+        
+        .peer-list {
+            margin-top: 10px;
+        }
+        
+        .peer-item {
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .peer-item strong {
+            color: #2d3748;
+            font-size: 14px;
+        }
+        
+        .peer-item span {
+            color: #718096;
+            font-size: 13px;
+        }
+        
+        .peer-item .price {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .footer a {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .footer a:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Your Carbon Price Recommendation</h1>
+            <p>Evidence-based analysis • Barron & Prassa (2025) framework</p>
+        </div>
+        
+        <!-- CORE RECOMMENDATION -->
+        <div class="recommendation-card">
+            <div class="price-display">
+                <div class="price-label">We Recommend</div>
+                <div class="price-amount">$95<span style="font-size: 32px;">/ton</span></div>
+                <div class="price-escalation">Escalate 3% annually + inflation</div>
+            </div>
+            
+            <div class="rationale">
+                <h3>📝 Why This Price</h3>
+                <p>Based on Microsoft's $100/ton leadership in tech and your aggressive 50% reduction target by 2030. At $95/ton, you'll be 3.3x above the tech industry median of $28.75/ton, signaling serious commitment while remaining competitive with the sector leader.</p>
+            </div>
+            
+            <div class="reality-check">
+                <h3>⚠️ Reality Check</h3>
+                <p><strong>At $95/ton, you'll likely achieve ~42% reduction by 2030.</strong> Your target is 50%, leaving an 8 percentage point gap. This gap will require complementary policies like renewable energy mandates or efficiency standards beyond carbon pricing alone.</p>
+            </div>
+        </div>
+        
+        <!-- MODULE 1: SHOW YOUR WORK -->
+        <div class="module">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <span class="module-icon">🔍</span>
+                    <span>Show Your Work: How We Calculated This</span>
+                </div>
+                <span class="expand-icon">▼</span>
+            </div>
+            <div class="module-content">
+                <div class="module-body">
+                    <div class="section">
+                        <div class="section-title">Step 1: Company Profile</div>
+                        <p><strong>Emissions Intensity:</strong> Medium - Moderate emissions profile</p>
+                        <p><strong>Target Ambition:</strong> Very Aggressive - 50% in 4 years = 12.5%/year (demanding pace)</p>
+                        <p><strong>Industry Pressure:</strong> High - Tech sector under intense scrutiny</p>
+                        <p><strong>Financial Capacity:</strong> High - Strong capacity to absorb impacts</p>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Step 2: Target-Consistent Price Calculation</div>
+                        <p><strong>Method:</strong> Marginal abatement cost curve analysis</p>
+                        <p><strong>Calculated Price:</strong> $22/ton (range: $18-27)</p>
+                        <p><strong>Confidence:</strong> Medium - Aggressive targets have higher uncertainty</p>
+                        <p style="margin-top: 10px; font-size: 13px; color: #718096;">Assumptions: Price elasticity -0.9, linear pathway, no major tech breakthroughs</p>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Step 3: Regulatory Risk Assessment</div>
+                        <p><strong>Risk Level:</strong> High - California is policy leader</p>
+                        <p><strong>Current:</strong> CA Cap-and-Trade at ~$30/ton</p>
+                        <p><strong>2027 Expected:</strong> Federal carbon pricing (40-50% probability)</p>
+                        <p><strong>2030 Expected:</strong> Building standards at $150-270/ton penalties</p>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Step 4: Synthesis</div>
+                        <p>Balancing aggressive target needs ($22/ton math) with high regulatory risk ($60-80 prep) and peer positioning ($29 median, $100 leader), we recommend $95/ton as optimal starting point.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MODULE 2: SENSITIVITY ANALYSIS -->
+        <div class="module">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <span class="module-icon">📊</span>
+                    <span>Sensitivity Analysis: What If?</span>
+                </div>
+                <span class="expand-icon">▼</span>
+            </div>
+            <div class="module-content">
+                <div class="module-body">
+                    <p style="margin-bottom: 20px; color: #718096;">How your recommended price changes under different scenarios:</p>
+                    
+                    <div class="scenario-grid">
+                        <div class="scenario-card">
+                            <h4>If target less ambitious (30%)</h4>
+                            <p><strong>Price: $62/ton</strong></p>
+                            <p>Lower ambition reduces required behavioral change. Price can drop ~35% while achieving revised target.</p>
+                        </div>
+                        
+                        <div class="scenario-card">
+                            <h4>If regulation certain</h4>
+                            <p><strong>Price: $124/ton</strong></p>
+                            <p>Federal $50/ton tax likely. Stay ahead of compliance by 30-50% premium.</p>
+                        </div>
+                        
+                        <div class="scenario-card">
+                            <h4>If tech breakthrough</h4>
+                            <p><strong>Price: $76/ton</strong></p>
+                            <p>Green hydrogen costs drop 50%. Cheaper abatement options available.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MODULE 3: YEAR-BY-YEAR TRAJECTORY -->
+        <div class="module">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <span class="module-icon">📈</span>
+                    <span>Year-by-Year Path to 2030</span>
+                </div>
+                <span class="expand-icon">▼</span>
+            </div>
+            <div class="module-content">
+                <div class="module-body">
+                    <div class="timeline-item">
+                        <h4>✓ 2026: $95/ton</h4>
+                        <p>Reduction: 8% | Cost: $4.75M | Actions: LED retrofits, HVAC optimization, Renewable PPAs</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h4>✓ 2027: $98/ton</h4>
+                        <p>Cumulative: 17% | Cost: $4.07M | Actions: Building envelope, Fleet efficiency</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h4>✓ 2028: $101/ton</h4>
+                        <p>Cumulative: 27% | Cost: $3.69M | Actions: On-site solar, Heat pumps, Process electrification</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h4>⚠ 2030: $110/ton</h4>
+                        <p>Cumulative: 42% | Gap: 8pp to target | Additional policies needed to close gap</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MODULE 4: RISK FLAGS -->
+        <div class="module">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <span class="module-icon">⚠️</span>
+                    <span>Risk Flags & Mitigation</span>
+                </div>
+                <span class="expand-icon">▼</span>
+            </div>
+            <div class="module-content">
+                <div class="module-body">
+                    <div class="risk-flag medium">
+                        <h4>⚠️ Shadow price may not drive operational change [Medium]</h4>
+                        <p>60%+ companies use shadow prices, but only 40% report material impact on decisions. Shadow prices work for CAPEX but often fail to change daily operations.</p>
+                        <p class="mitigation">→ Mitigation: Start with shadow price for capital decisions, transition to internal fee by Year 2</p>
+                    </div>
+                    
+                    <div class="risk-flag">
+                        <h4>⚠️ Scope 3 emissions likely dominate [High]</h4>
+                        <p>Tech companies typically have 70-90% of emissions in supply chain (Scope 3). True footprint likely 3-10x larger than 50,000 tons.</p>
+                        <p class="mitigation">→ Mitigation: Conduct Scope 3 inventory by Q3 2026, extend price coverage by 2028</p>
+                    </div>
+                    
+                    <div class="risk-flag medium">
+                        <h4>⚠️ Price below EPA social cost ($252/ton) [Medium]</h4>
+                        <p>Your $95/ton is 62% below EPA's social cost. Gap indicates not fully internalizing climate damages.</p>
+                        <p class="mitigation">→ Mitigation: Plan escalation to $175+ by 2030, $252+ by 2035</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- MODULE 5: PEER DEEP DIVE -->
+        <div class="module">
+            <div class="module-header" onclick="toggleModule(this)">
+                <div class="module-title">
+                    <span class="module-icon">🏢</span>
+                    <span>Peer Deep Dive: Your Competitive Position</span>
+                </div>
+                <span class="expand-icon">▼</span>
+            </div>
+            <div class="module-content">
+                <div class="module-body">
+                    <div class="section">
+                        <div class="section-title">Leaders</div>
+                        <div class="peer-list">
+                            <div class="peer-item">
+                                <strong>Microsoft</strong>
+                                <span class="price">$100/ton</span>
+                            </div>
+                            <div class="peer-item">
+                                <strong>SAP</strong>
+                                <span class="price">$50/ton</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Followers</div>
+                        <div class="peer-list">
+                            <div class="peer-item">
+                                <strong>Salesforce</strong>
+                                <span class="price">$32.50/ton</span>
+                            </div>
+                            <div class="peer-item">
+                                <strong>HP</strong>
+                                <span class="price">$25/ton</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Disclosure Gap</div>
+                        <p style="color: #718096; line-height: 1.6;">7 of 13 major tech companies (Google, Apple, Meta, Amazon, Tesla, IBM, Intel) have NO disclosed ICP despite ambitious net-zero commitments. This is a major transparency gap.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <a href="index.html">← Analyze Another Company</a>
+        </div>
+    </div>
+    
+    <script>
+        function toggleModule(header) {
+            const module = header.parentElement;
+            module.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>

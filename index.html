@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Carbon Price Advisor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 50px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #718096;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .tagline {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        
+        .tagline p {
+            color: #4a5568;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .helper-text {
+            font-size: 13px;
+            color: #718096;
+            margin-top: 6px;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .footer p {
+            color: #718096;
+            font-size: 13px;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Internal Carbon Price Advisor</h1>
+            <p>Get an evidence-based carbon pricing recommendation in 5 minutes</p>
+        </div>
+        
+        <div class="tagline">
+            <p><strong>Free. No consultant required.</strong> Based on peer-reviewed research and data from 3,600+ companies globally.</p>
+        </div>
+        
+        <form id="carbonForm">
+            <div class="form-group">
+                <label for="industry">What industry are you in? *</label>
+                <select id="industry" name="industry" required>
+                    <option value="">Select your industry</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Consumer Goods">Consumer Goods</option>
+                    <option value="Energy & Utilities">Energy & Utilities</option>
+                    <option value="Oil & Gas">Oil & Gas</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="emissions">Annual Scope 1+2 Emissions (tons CO2e) *</label>
+                <input type="number" id="emissions" name="emissions" required placeholder="e.g., 50000">
+                <div class="helper-text">Don't know exactly? Use your best estimate. Small company (~1,000), Medium (~50,000), Large (500,000+)</div>
+            </div>
+            
+            <div class="form-group">
+                <label>Do you have a decarbonization target? *</label>
+                <div class="two-column">
+                    <div>
+                        <input type="number" id="target_pct" name="target_pct" required placeholder="% reduction" min="0" max="100">
+                        <div class="helper-text">Percent reduction</div>
+                    </div>
+                    <div>
+                        <input type="number" id="target_year" name="target_year" required placeholder="Target year" min="2025" max="2050">
+                        <div class="helper-text">By what year?</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="location">Where are you located? *</label>
+                <input type="text" id="location" name="location" required placeholder="e.g., California, USA or Berlin, Germany">
+                <div class="helper-text">City, State, or Country (helps assess regulatory environment)</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="size">Company size (annual revenue) *</label>
+                <select id="size" name="size" required>
+                    <option value="">Select size</option>
+                    <option value="<$100M">< $100 million</option>
+                    <option value="$100M-$1B">$100M - $1 billion</option>
+                    <option value="$1B-$10B">$1 - $10 billion</option>
+                    <option value=">$10B">> $10 billion</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="current_icp">Do you currently have an internal carbon price?</label>
+                <input type="text" id="current_icp" name="current_icp" placeholder="e.g., $30/ton or 'None'">
+                <div class="helper-text">Optional - we'll evaluate if it's sufficient</div>
+            </div>
+            
+            <button type="submit">Get My Recommendation →</button>
+        </form>
+        
+        <div class="footer">
+            <p>Based on <a href="#">Barron & Prassa (2025)</a> framework • Built by Dimitra Prassa</p>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('carbonForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Form submitted! Next step: connect to Python backend');
+            // We'll add the real connection in the next step
+        });
+    </script>
+</body>
+</html>

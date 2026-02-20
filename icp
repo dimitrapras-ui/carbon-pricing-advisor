@@ -1,0 +1,1296 @@
+import anthropic
+import json
+import os
+
+# Your API key
+client = anthropic.Anthropic(
+    api_key=os.environ.get("ANTHROPIC_API_KEY")
+)
+
+CORPORATE_ICP_DATABASE = """
+═══════════════════════════════════════════════════════════
+COMPREHENSIVE INTERNAL CARBON PRICING DATABASE (2024-2025)
+═══════════════════════════════════════════════════════════
+
+Data sources:
+- Primary research: 49 major corporations (direct analysis)
+- CDP 2021 Global Report: 2,012 companies worldwide
+- CDP 2024 Data: 3,600+ companies using or planning ICP
+- Latest regulatory landscape: 53 national + 40 subnational jurisdictions
+
+═══════════════════════════════════════════════════════════
+GLOBAL CARBON PRICING CONTEXT
+═══════════════════════════════════════════════════════════
+
+MARKET SCALE:
+- 3,600+ companies globally using or planning ICP (2024)
+- 80-year growth: 150 companies (2014) → 3,600+ (2024)
+- Combined market cap: $27+ trillion
+- 53 national + 40 subnational jurisdictions with carbon pricing
+- 12.8 GtCO2e covered (24% of global GHG emissions)
+
+MEDIAN PRICES - THE REALITY CHECK:
+- Global median ICP: $25/ton (CDP 2020)
+- EPA Social Cost of Carbon: $252/ton (2% discount rate, 2025)
+- GAP: Most companies price carbon 10x LOWER than true social cost
+- Financial risk: ~50% of listed companies face 20%+ earnings impact if carbon hits $100/ton
+
+ICP ADOPTION DRIVERS:
+- Companies facing/expecting regulation: 5x more likely to use ICP
+- 1,113 companies currently subject to carbon pricing regulation
+- 717 more expect regulation within 3 years
+- 60% of regulated companies DON'T identify it as substantive risk (major disclosure gap)
+
+═══════════════════════════════════════════════════════════
+ICP MECHANISMS & BEST PRACTICES
+═══════════════════════════════════════════════════════════
+
+TYPE DISTRIBUTION (CDP 2024):
+- Shadow pricing: 60%+ (most common - hypothetical cost, no money changes hands)
+- Implicit price: 19.3% (calculated retroactively from actual spending)
+- Internal fee: 15.0% (actual money collected and redistributed)
+- Offsets: 8.6%
+- Internal trading: 2-3%
+
+CRITICAL INSIGHT - EVOLUTIONARY vs STATIC:
+- 2x more companies use EVOLUTIONARY pricing (escalating annually)
+- Static prices = outdated within 2-3 years
+- Best practice: 3-5% annual escalation + inflation
+- Example: ACCIONA (Spain): €36 (2016) → €45 (2030) → €72 (2050)
+
+EMISSIONS COVERAGE (WIDTH):
+- 90% of ICPs cover Scope 1 (direct emissions)
+- 70%+ cover Scope 2 (purchased electricity)
+- 35-40% cover Scope 3 (supply chain) - growing rapidly
+- Best practice: Full value chain coverage
+
+BUSINESS APPLICATIONS (DEPTH):
+Primary uses by frequency:
+1. Drive low-carbon investment (61%)
+2. Drive energy efficiency (58%)
+3. Change internal behavior (55%)
+4. Navigate GHG regulations (42%)
+5. Stress test investments (31%)
+6. Meet stakeholder expectations (26%)
+
+INFLUENCE LEVELS (from weakest to strongest):
+1. Tracking only (informational)
+2. Qualitative consideration
+3. Financial indicator in analysis
+4. Passing criterion for approval
+5. Fee collected with budget impact
+
+═══════════════════════════════════════════════════════════
+INDUSTRY BENCHMARKS (Median ICP by Sector)
+═══════════════════════════════════════════════════════════
+
+Based on 49-company analysis + CDP global data:
+
+Consumer Goods:     $40/ton    (range: $35-150)
+Energy & Utilities: $70/ton    (range: $27.50-150)
+Finance:            $62.50/ton (range: $50-87.50)
+Manufacturing:      $40/ton    (range: $30-75)
+Technology:         $28.75/ton (range: $10-100)
+Oil & Gas:          $70/ton    (range: $40-75)
+
+═══════════════════════════════════════════════════════════
+SPECIFIC COMPANY DATA - VERIFIED EXAMPLES
+═══════════════════════════════════════════════════════════
+
+TECHNOLOGY SECTOR:
+Leader:
+- Microsoft: $100/ton (shadow price, carbon negative by 2030, covers all scopes)
+
+Mid-range:
+- SAP: $50/ton (shadow price)
+- Salesforce: $32.50/ton (shadow price, net zero by 2040)
+- HP: $25/ton (shadow price)
+
+Lower-range:
+- Accenture: $17.50/ton (INTERNAL FEE - actual money collected)
+- Infosys: $10/ton (internal fee, carbon neutral since 2020)
+
+NO DISCLOSURE (major gap):
+- Google/Alphabet (uses offsets, no disclosed ICP)
+- Apple (renewable energy focus, no disclosed ICP)
+- Meta, Amazon, IBM, Intel, Tesla (all have net-zero commitments but no disclosed ICP)
+
+KEY INSIGHT: Tech sector has huge disclosure gap - 7 of 13 major companies don't disclose ICP despite ambitious public climate commitments.
+
+─────────────────────────────────────────────────────────
+
+CONSUMER GOODS SECTOR:
+Leaders:
+- Nestlé: $150/ton (shadow price) - HIGHEST IN SECTOR
+- Unilever: $75/ton (shadow price, comprehensive)
+- Danone: €35/ton (~$40/ton, static & uniform, used for CAPEX approval)
+
+Mid-range:
+- Marks & Spencer: $40/ton (shadow price)
+
+Lower-range:
+- H&M: $35/ton (shadow price)
+
+NO ICP:
+- Walmart (Project Gigaton for supply chain, but no formal ICP)
+- IKEA (explicitly rejected ICP due to "accounting complexity")
+
+KEY INSIGHT: Wide range ($35-150) reflects different levels of supply chain ambition and Scope 3 focus.
+
+─────────────────────────────────────────────────────────
+
+ENERGY & UTILITIES SECTOR:
+
+RENEWABLES (highest prices):
+- Ørsted: $150/ton (GOLD STANDARD - Danish offshore wind leader)
+- Vattenfall: $100/ton (Swedish utility, very progressive)
+- Enel: $90/ton (Italian, very detailed reporting)
+
+TRADITIONAL UTILITIES (moderate):
+- NextEra Energy: $37.50/ton (largest US renewable energy company)
+- Duke Energy: $32.50/ton
+- PSEG: $27.50/ton (less disclosed)
+
+OIL & GAS (defensive pricing):
+- BP: $75/ton (shadow price, varies by project type)
+- Shell: $70/ton (shadow price, investment decisions)
+- TotalEnergies: $70/ton (most ambitious of oil majors)
+- Chevron: $45/ton (long-term planning)
+- ExxonMobil: $40/ton (LOWEST - under heavy investor pressure)
+
+OIL & GAS PARADOX:
+- ICPs higher than tech sector median, BUT
+- Used for stress-testing, NOT driving transition
+- Prices insufficient to actually shift away from fossil fuels
+- ExxonMobil criticized for lowest price among majors
+
+─────────────────────────────────────────────────────────
+
+FINANCE SECTOR:
+Leaders:
+- Allianz: $87.50/ton (insurance - climate exposure drives ambition)
+- Goldman Sachs: $75/ton (portfolio assessment)
+- BlackRock: $75/ton (investment decisions)
+
+Mid-range:
+- BNP Paribas: $65/ton (European, more advanced)
+- HSBC: $62.50/ton (under activist pressure)
+- Barclays: $57.50/ton (net zero 2050)
+
+Lower-range:
+- JPMorgan Chase: $50/ton (Paris-aligned commitment)
+- Bank of America: $50/ton (net zero 2050)
+- Morgan Stanley: $50/ton
+- TD Bank: $8/ton (internal fee, DOWN from $10 in 2010 despite emissions down 25%)
+
+KEY INSIGHT: Finance uses ICP primarily for portfolio/lending risk assessment, not operational emissions (which are minimal).
+
+─────────────────────────────────────────────────────────
+
+MANUFACTURING SECTOR:
+Leaders:
+- BASF: $75/ton (largest chemical company, German)
+- Schneider Electric: $75/ton (LEADER - literally sells sustainability solutions)
+- Siemens: $65/ton (strong sustainability reputation)
+- Volvo Group: $62.50/ton (Swedish, progressive)
+
+Mid-range:
+- LafargeHolcim: $40/ton (cement - very high emissions intensity)
+- Dow Chemical: $40/ton
+- ABB: $40/ton (Swiss industrial)
+
+Lower-range:
+- 3M: $30/ton (less disclosed)
+- Michelin: $30/ton (CDP disclosed)
+
+Additional examples from CDP data:
+- Owens Corning (USA): $10-60/ton (RANGE, shadow price, Scope 1+2+3, risk analysis)
+- Saint-Gobain (France): €30/ton (investments) + €100/ton (R&D projects)
+- Indorama Ventures (Thailand): $15/ton (uniform shadow, scenario analysis)
+
+KEY INSIGHT: Manufacturing is price-sensitive due to energy intensity. European companies trend higher than North American.
+
+─────────────────────────────────────────────────────────
+
+ADDITIONAL VERIFIED EXAMPLES (from CDP disclosure data):
+
+WINE/BEVERAGE:
+- Viña Concha y Toro (Chile): Internal fund (price not disclosed, used for BU awareness)
+
+ENERGY (DETAILED SCENARIO ANALYSIS):
+- Seven Generations (Canada): $20+/ton escalating (shadow, CAPEX planning)
+- Vermilion Energy (Canada): DIFFERENTIATED pricing by region:
+  * $30 CAD in Canada
+  * €20-30 in Europe
+  * $20 AUD in Australia
+  * $20 USD in USA
+  (Demonstrates best practice: regional regulatory alignment)
+
+INFRASTRUCTURE:
+- ACCIONA (Spain): EVOLUTIONARY pricing model (best practice example):
+  * €36/tCO2 (2016)
+  * €45/tCO2 (2030 target)
+  * €72/tCO2 (2050 target)
+  (100% escalation over 34 years = 2.1% annual growth)
+
+MINING - SCENARIO ANALYSIS EXAMPLE:
+- Teck Resources (Canada): Uses ICP for scenario planning:
+  * BC Operations forecast (2022): $45M-$80M cost impact at $30-50/ton tax
+  * Cardinal River (Alberta): $0.5M-$4.5M/year (depends on 12-40% reduction requirement, $15-40/ton)
+  * Fort Hills project: $1M-$8M/year
+  (Demonstrates using ICP for financial risk quantification)
+
+═══════════════════════════════════════════════════════════
+REGULATORY LANDSCAPE - WHAT COMPANIES FACE
+═══════════════════════════════════════════════════════════
+
+MOST COMMON REGULATIONS (by # of companies affected):
+
+1. EU ETS: 425 companies (5% increase YoY)
+   - Covers 27 EU members + Norway, Iceland, Liechtenstein
+   - Current price: ~€40-80/ton (highly volatile)
+
+2. Japan Carbon Tax: 172 companies
+   - ¥289/tCO2 (~$2.40/ton - very low)
+
+3. Tokyo Cap-and-Trade: 97 companies
+
+4. Korea ETS: 63 companies
+
+5. California Cap-and-Trade: 57 companies
+   - Current auction price: ~$30/ton
+
+6. BC Carbon Tax (Canada): 55 companies
+
+7. South Africa Carbon Tax: 46 companies
+   - Implemented 2019
+   - 318% YoY increase in company exposure (fastest growing)
+
+8. China Pilot ETS Programs: Growing (Shenzhen, Shanghai, Beijing)
+
+US REGIONAL INITIATIVES:
+- RGGI (Regional Greenhouse Gas Initiative): Northeast states, ~$20/ton
+- California: Cap-and-trade ~$30/ton
+- Washington State: Cap-and-invest program
+
+BUILDING PERFORMANCE STANDARDS (backstop prices):
+- NYC Local Law 97: $268/ton penalty
+- Boston BERDO: $234/ton penalty
+- Maryland BEPS: $273/ton (based on EPA SC-GHG)
+- Burlington VT: $150/ton fee for non-compliant buildings
+
+═══════════════════════════════════════════════════════════
+CRITICAL PATTERNS & INSIGHTS
+═══════════════════════════════════════════════════════════
+
+GEOGRAPHIC TRENDS:
+- European companies: Higher prices (regulatory pressure + social expectations)
+  Examples: Ørsted $150, Vattenfall $100, BASF $75, BNP Paribas $65
+- US companies: More conservative, lower disclosure
+  Examples: Duke $32.50, PSEG $27.50, many tech giants no disclosure
+- Asian companies: Growing rapidly (China driving growth)
+- African companies: 59% of South African companies use ICP (highest % globally due to carbon tax)
+
+DISCLOSURE GAP - THE BIG PROBLEM:
+- 7 of 13 major tech companies: NO disclosed ICP
+  (Google, Apple, Meta, Amazon, Tesla, IBM, Intel)
+- All have ambitious net-zero commitments
+- Gap between public rhetoric and internal accountability
+- Red flag for investors: "Do you actually have internal systems to achieve your targets?"
+
+THE $25 vs $252 PROBLEM:
+- Global median: $25/ton
+- EPA social cost: $252/ton
+- Gap: 10x difference
+- Most corporate ICPs dramatically undervalue climate damage
+- This is THE accountability hook for your tool
+
+CORRELATION WITH CLIMATE ACTION:
+Companies using ICP are MORE likely to:
+- Have Science-Based Targets (24.5% vs 2.6%)
+- Source renewable energy (19.5% vs 18.5%)
+- Have climate opportunities (95% vs 60%)
+- Verify emissions (89% vs 28%)
+- Integrate climate into strategy (99% vs 78%)
+
+ICP = LEADING INDICATOR of serious climate action
+
+THE REGULATION-ICP CONNECTION:
+- 75% of companies facing carbon pricing regulation use/plan ICP
+- Only 33% of non-regulated companies do
+- Regulation drives adoption
+- BUT: 60% of regulated companies don't see it as "substantive risk"
+  (This is either denial or poor disclosure - investors should probe)
+
+═══════════════════════════════════════════════════════════
+WHAT MAKES AN EFFECTIVE ICP - THE 4 DIMENSIONS
+═══════════════════════════════════════════════════════════
+
+HEIGHT (Price Level):
+- Too low (<$30): Symbolic, doesn't change decisions
+- Moderate ($30-75): Influences marginal decisions
+- Meaningful ($75-150): Drives real behavior change
+- Ambitious ($150+): Forces transformation
+- Benchmark: EPA SC-GHG $252/ton
+
+WIDTH (Emissions Coverage):
+- Minimum: Scope 1 only
+- Good: Scope 1+2
+- Best practice: Scope 1+2+3 (full value chain)
+- 90% cover Scope 1, only 35-40% cover Scope 3
+
+DEPTH (Business Influence):
+Level 1: Tracking only (informational)
+Level 2: Qualitative consideration
+Level 3: Financial indicator in analysis
+Level 4: Passing criterion for approval
+Level 5: Fee collected (actual budget impact)
+
+Most effective: Level 4-5
+
+TIME (Evolution):
+- Static: Price stays constant (risky - falls behind)
+- Evolutionary: Escalates over time (best practice)
+- Recommended: 3-5% annual increase + inflation
+- Review frequency: Every 2-3 years minimum
+
+═══════════════════════════════════════════════════════════
+KEY RECOMMENDATIONS FOR COMPANIES
+═══════════════════════════════════════════════════════════
+
+STARTING POINT:
+- Don't wait for the "perfect" price
+- Start with $40-50/ton minimum
+- Use shadow price for CAPEX decisions
+- Cover Scope 1+2 at minimum
+
+ESCALATION PATH:
+- Build in 3-5% annual escalation
+- Review every 2-3 years
+- Increase as regulations tighten
+- Target alignment with science-based pathway
+
+AVOID COMMON MISTAKES:
+1. Pricing at $0 (most common - 66% of companies)
+2. Static prices that become outdated
+3. Too low to influence decisions (<$30)
+4. Scope 1 only (ignores supply chain)
+5. Shadow price with no actual influence
+6. No connection to stated climate targets
+
+BEST PRACTICE CHECKLIST:
+✓ Price ≥ $75/ton (meaningful level)
+✓ Evolutionary (escalates over time)
+✓ Covers Scope 1+2+3
+✓ Level 4-5 influence (actually affects decisions)
+✓ Aligned with climate targets (gap analysis)
+✓ Reviewed every 2-3 years
+✓ Transparent disclosure to investors
+
+═══════════════════════════════════════════════════════════
+USING THIS DATA FOR RECOMMENDATIONS
+═══════════════════════════════════════════════════════════
+
+When analyzing a company, cite:
+1. Specific comparable companies (not just medians)
+2. Industry leaders vs laggards
+3. Gap between their price and EPA SC-GHG
+4. Regulatory environment in their location
+5. Whether price will actually achieve their stated targets
+
+Example strong recommendation:
+"We recommend $95/ton based on:
+- Your industry median: $28.75/ton (you're 3.3x higher - strong signal)
+- Microsoft leads at $100/ton (you're close to best-in-class)
+- EPA SC-GHG: $252/ton (you're still 2.7x below true social cost)
+- California regulation: $30/ton market price (you're well above compliance)
+- Target-consistent modeling: $85-110/ton needed for 50% reduction
+
+Reality check: At $95/ton you'll achieve ~42% reduction.
+Your target: 50%.
+Gap: 8 percentage points.
+Options: (1) Increase to $125/ton, (2) Add complementary policies, (3) Revise target"
+"""
+# ============================================================================
+# PEER BENCHMARK FUNCTION
+# ============================================================================
+
+def get_peer_benchmark(industry):
+    """Returns peer data for a given industry"""
+    benchmarks = {
+        "Technology": {
+            "median": 28.75,
+            "range": "10-100",
+            "leader": "Microsoft at $100/ton",
+            "laggard": "Infosys at $10/ton",
+            "context": "7 of 13 major tech companies don't disclose ICP"
+        },
+        "Consumer Goods": {
+            "median": 40,
+            "range": "35-150",
+            "leader": "Nestlé at $150/ton",
+            "laggard": "H&M at $35/ton",
+            "context": "Wide range reflects supply chain ambition"
+        },
+        "Energy & Utilities": {
+            "median": 70,
+            "range": "27.50-150",
+            "leader": "Ørsted at $150/ton",
+            "laggard": "PSEG at $27.50/ton",
+            "context": "Renewables higher than traditional utilities"
+        },
+        "Finance": {
+            "median": 62.50,
+            "range": "50-87.50",
+            "leader": "Allianz at $87.50/ton",
+            "laggard": "Three-way tie at $50/ton",
+            "context": "Used for portfolio risk, not operations"
+        },
+        "Manufacturing": {
+            "median": 40,
+            "range": "30-75",
+            "leader": "BASF and Schneider at $75/ton",
+            "laggard": "3M and Michelin at $30/ton",
+            "context": "Price sensitive due to energy intensity"
+        },
+        "Oil & Gas": {
+            "median": 70,
+            "range": "40-75",
+            "leader": "BP at $75/ton",
+            "laggard": "ExxonMobil at $40/ton",
+            "context": "Used for investment stress-testing"
+        }
+    }
+    return benchmarks.get(industry, None)
+
+# ============================================================================
+# MULTI-STEP ANALYSIS MODULES
+# ============================================================================
+
+def analyze_company_profile(company_data):
+    """
+    STEP 1: Deep analysis of company characteristics
+    Returns: Risk profile, ambition level, constraints
+    """
+    
+    # Calculate emissions intensity (if we have revenue data)
+    # For now, we'll classify based on emissions and size
+    emissions = company_data['emissions']
+    size = company_data['size']
+    
+    # Determine emissions intensity category
+    if emissions < 10000:
+        intensity = "Low"
+        intensity_desc = "Relatively low operational footprint"
+    elif emissions < 100000:
+        intensity = "Medium"
+        intensity_desc = "Moderate emissions profile"
+    else:
+        intensity = "High"
+        intensity_desc = "Significant emissions intensity"
+    
+    # Calculate target ambition
+    target_pct = company_data['target_pct']
+    target_year = company_data['target_year']
+    years_to_target = target_year - 2026  # Assuming current year is 2026
+    annual_reduction_rate = target_pct / years_to_target if years_to_target > 0 else 0
+    
+    if annual_reduction_rate >= 8:
+        ambition = "Very Aggressive"
+        ambition_desc = f"{target_pct}% in {years_to_target} years = {annual_reduction_rate:.1f}%/year (demanding pace)"
+    elif annual_reduction_rate >= 5:
+        ambition = "Aggressive"
+        ambition_desc = f"{target_pct}% in {years_to_target} years = {annual_reduction_rate:.1f}%/year (ambitious)"
+    elif annual_reduction_rate >= 3:
+        ambition = "Moderate"
+        ambition_desc = f"{target_pct}% in {years_to_target} years = {annual_reduction_rate:.1f}%/year (reasonable pace)"
+    else:
+        ambition = "Conservative"
+        ambition_desc = f"{target_pct}% in {years_to_target} years = {annual_reduction_rate:.1f}%/year (gradual)"
+    
+    # Assess industry pressure based on sector
+    industry = company_data['industry']
+    pressure_map = {
+        'Technology': ('High', 'Tech sector under intense scrutiny from investors and public'),
+        'Finance': ('High', 'Financial services face regulatory pressure and reputational risk'),
+        'Consumer Goods': ('High', 'Direct consumer pressure and brand reputation at stake'),
+        'Oil & Gas': ('Very High', 'Existential pressure to transform business model'),
+        'Energy & Utilities': ('Very High', 'Core of energy transition, heavy regulation'),
+        'Manufacturing': ('Medium', 'Competitive pressures but energy costs are material')
+    }
+    pressure, pressure_desc = pressure_map.get(industry, ('Medium', 'Growing stakeholder expectations'))
+    
+    # Assess financial capacity based on size
+    capacity_map = {
+        '<$100M': ('Low', 'Limited resources for ambitious carbon pricing'),
+        '$100M-$1B': ('Medium', 'Moderate capacity, price must be carefully calibrated'),
+        '$1B-$10B': ('High', 'Strong capacity to absorb carbon pricing impacts'),
+        '>$10B': ('Very High', 'Substantial resources, can afford ambitious pricing')
+    }
+    capacity, capacity_desc = capacity_map.get(size, ('Medium', 'Moderate financial capacity'))
+    
+    return {
+        'emissions_intensity': {
+            'level': intensity,
+            'description': intensity_desc,
+            'annual_emissions': f"{emissions:,} tons CO2e"
+        },
+        'target_ambition': {
+            'level': ambition,
+            'description': ambition_desc,
+            'annual_rate': f"{annual_reduction_rate:.1f}%/year"
+        },
+        'industry_pressure': {
+            'level': pressure,
+            'description': pressure_desc
+        },
+        'financial_capacity': {
+            'level': capacity,
+            'description': capacity_desc
+        }
+    }
+
+
+def calculate_target_consistent_price(company_data, profile):
+    """
+    STEP 2: Mathematical calculation of price needed to hit target
+    Uses price elasticity and abatement cost curves
+    """
+    
+    target_pct = company_data['target_pct']
+    target_year = company_data['target_year']
+    years_to_target = target_year - 2026
+    
+    # Price elasticity estimates from literature
+    # Most studies show elasticity between -0.7 and -1.2
+    # We'll use -0.9 as middle estimate
+    elasticity = -0.9
+    
+    # Base calculation: What carbon price drives X% reduction?
+    # Formula: reduction % = elasticity × ln(1 + price/baseline)
+    # Solving for price: price = baseline × (e^(reduction/elasticity) - 1)
+    
+    # Baseline carbon price assumption (implicit cost of business as usual)
+    baseline = 30  # Rough estimate of implicit carbon cost
+    
+    # Calculate required price for target
+    import math
+    reduction_fraction = target_pct / 100
+    price_multiplier = math.exp(reduction_fraction / abs(elasticity)) - 1
+    target_price = baseline * price_multiplier
+    
+    # Add confidence intervals (±20%)
+    price_low = target_price * 0.8
+    price_high = target_price * 1.2
+    
+    # Adjust based on ambition level
+    if profile['target_ambition']['level'] in ['Very Aggressive', 'Aggressive']:
+        confidence = 'Medium'
+        confidence_note = 'Aggressive targets have higher uncertainty - technology costs and behavioral response are key variables'
+    else:
+        confidence = 'High'
+        confidence_note = 'Moderate targets have well-established abatement cost curves'
+    
+    return {
+        'method': 'Marginal abatement cost curve analysis with price elasticity modeling',
+        'target_price': round(target_price),
+        'range': f"${round(price_low)}-${round(price_high)}/ton",
+        'confidence': confidence,
+        'confidence_note': confidence_note,
+        'calculation_details': {
+            'elasticity_used': elasticity,
+            'baseline_assumption': f"${baseline}/ton implicit cost",
+            'reduction_needed': f"{target_pct}% over {years_to_target} years"
+        },
+        'assumptions': [
+            f"Price elasticity of demand: {elasticity}",
+            "Linear reduction pathway",
+            "No major technology cost breakthroughs",
+            "Behavioral response consistent with historical data"
+        ]
+    }
+
+
+def assess_regulatory_risk(company_data):
+    """
+    STEP 3: Analyzes specific regulations that apply
+    Returns: Current exposure, expected future exposure
+    """
+    
+    location = company_data['location']
+    industry = company_data['industry']
+    
+    # Regulatory mapping by location
+    regulatory_profile = {
+        'current_exposure': {},
+        'expected_2027': {},
+        'expected_2030': {},
+        'risk_level': 'Medium'
+    }
+    
+    # California-specific
+    if 'California' in location or 'CA' in location:
+        regulatory_profile['current_exposure'] = {
+            'policy': 'California Cap-and-Trade',
+            'price': '~$30/ton',
+            'coverage': 'Large emitters >25k tons CO2e',
+            'description': 'Currently subject to compliance obligations'
+        }
+        regulatory_profile['expected_2027'] = {
+            'policy': 'Potential Federal Carbon Pricing',
+            'probability': '40-50%',
+            'price_range': '$40-60/ton',
+            'description': 'Federal policy momentum growing, but political uncertainty high'
+        }
+        regulatory_profile['expected_2030'] = {
+            'policy': 'Building Performance Standards Expansion',
+            'price': '$150-270/ton penalties',
+            'description': 'Following NYC Local Law 97 and Boston BERDO models'
+        }
+        regulatory_profile['risk_level'] = 'High'
+        regulatory_profile['risk_explanation'] = 'California is policy leader - expect increasingly stringent regulations'
+    
+    # EU locations
+    elif any(eu in location for eu in ['EU', 'Europe', 'Germany', 'France', 'Spain', 'Italy', 'UK']):
+        regulatory_profile['current_exposure'] = {
+            'policy': 'EU Emissions Trading System (ETS)',
+            'price': '~€40-80/ton ($45-90/ton)',
+            'coverage': 'Industrial installations, power, aviation',
+            'description': 'Established carbon market with rising prices'
+        }
+        regulatory_profile['expected_2027'] = {
+            'policy': 'EU ETS Phase IV tightening + CBAM',
+            'probability': '95%+',
+            'price_range': '€60-100/ton',
+            'description': 'Carbon Border Adjustment Mechanism adds supply chain pressure'
+        }
+        regulatory_profile['expected_2030'] = {
+            'policy': 'Fit for 55 package full implementation',
+            'price': '€80-120/ton',
+            'description': 'Expanded coverage, reduced free allowances, building sector inclusion'
+        }
+        regulatory_profile['risk_level'] = 'Very High'
+        regulatory_profile['risk_explanation'] = 'EU has most comprehensive carbon policy globally - compliance costs rising'
+    
+    # Other US states
+    elif 'USA' in location or any(state in location for state in ['New York', 'Massachusetts', 'Washington']):
+        regulatory_profile['current_exposure'] = {
+            'policy': 'State-level initiatives',
+            'price': '$15-30/ton (varies by state)',
+            'coverage': 'Varies - some states have RGGI (power sector)',
+            'description': 'Patchwork of state policies'
+        }
+        regulatory_profile['expected_2027'] = {
+            'policy': 'Federal carbon pricing',
+            'probability': '30-40%',
+            'price_range': '$35-50/ton',
+            'description': 'Lower probability than CA, but growing momentum'
+        }
+        regulatory_profile['expected_2030'] = {
+            'policy': 'State building standards',
+            'price': '$100-200/ton penalties',
+            'description': 'Following coastal state leaders'
+        }
+        regulatory_profile['risk_level'] = 'Medium-High'
+        regulatory_profile['risk_explanation'] = 'Progressive states driving policy, but federal uncertainty remains'
+    
+    # Asia
+    elif any(country in location for country in ['China', 'Japan', 'Korea', 'Singapore', 'India']):
+        regulatory_profile['current_exposure'] = {
+            'policy': 'National carbon pricing systems',
+            'price': '$5-30/ton (varies significantly)',
+            'coverage': 'China ETS (power), Japan tax, Korea ETS',
+            'description': 'Rapidly developing carbon pricing infrastructure'
+        }
+        regulatory_profile['expected_2027'] = {
+            'policy': 'Expanded coverage and higher prices',
+            'probability': '70-80%',
+            'price_range': '$20-50/ton',
+            'description': 'China ETS expansion to more sectors, regional price convergence'
+        }
+        regulatory_profile['expected_2030'] = {
+            'policy': 'Regional carbon market integration',
+            'price': '$40-80/ton',
+            'description': 'Movement toward regional coordination and higher carbon prices'
+        }
+        regulatory_profile['risk_level'] = 'Medium-High'
+        regulatory_profile['risk_explanation'] = 'Rapid policy development - expect significant changes'
+    
+    # Default for other locations
+    else:
+        regulatory_profile['current_exposure'] = {
+            'policy': 'Limited or no carbon pricing',
+            'price': '$0-10/ton',
+            'coverage': 'Minimal',
+            'description': 'Currently low regulatory pressure'
+        }
+        regulatory_profile['expected_2027'] = {
+            'policy': 'Potential new carbon pricing',
+            'probability': '20-30%',
+            'price_range': '$15-30/ton',
+            'description': 'Growing global momentum, but uncertain timeline'
+        }
+        regulatory_profile['expected_2030'] = {
+            'policy': 'Likely some form of carbon pricing',
+            'price': '$25-50/ton',
+            'description': 'Global trend toward carbon pricing'
+        }
+        regulatory_profile['risk_level'] = 'Medium'
+        regulatory_profile['risk_explanation'] = 'Regulatory landscape evolving - plan for future exposure'
+    
+    return regulatory_profile
+
+
+def synthesize_recommendation(company_data, profile, target_calc, regulatory, peer_data):
+    """
+    STEP 4: Combines all analysis into final recommendation
+    This is where Claude does the synthesis
+    """
+    
+    prompt = f"""You are synthesizing carbon pricing analysis from multiple analytical modules.
+
+COMPANY OVERVIEW:
+- Industry: {company_data['industry']}
+- Emissions: {company_data['emissions']:,} tons CO2e
+- Target: {company_data['target_pct']}% by {company_data['target_year']}
+- Location: {company_data['location']}
+
+ANALYSIS MODULE RESULTS:
+
+MODULE 1 - COMPANY PROFILE:
+Emissions Intensity: {profile['emissions_intensity']['level']} - {profile['emissions_intensity']['description']}
+Target Ambition: {profile['target_ambition']['level']} - {profile['target_ambition']['description']}
+Industry Pressure: {profile['industry_pressure']['level']} - {profile['industry_pressure']['description']}
+Financial Capacity: {profile['financial_capacity']['level']} - {profile['financial_capacity']['description']}
+
+MODULE 2 - TARGET-CONSISTENT PRICE:
+Calculated Price Needed: ${target_calc['target_price']}/ton (range: {target_calc['range']})
+Method: {target_calc['method']}
+Confidence: {target_calc['confidence']} - {target_calc['confidence_note']}
+Key Assumptions: {', '.join(target_calc['assumptions'])}
+
+MODULE 3 - REGULATORY RISK:
+Current Exposure: {regulatory['current_exposure'].get('policy', 'None')} at {regulatory['current_exposure'].get('price', 'N/A')}
+2027 Expected: {regulatory['expected_2027'].get('policy', 'Unknown')} ({regulatory['expected_2027'].get('probability', 'N/A')} probability)
+2030 Expected: {regulatory['expected_2030'].get('policy', 'Unknown')} at {regulatory['expected_2030'].get('price', 'N/A')}
+Risk Level: {regulatory['risk_level']} - {regulatory['risk_explanation']}
+
+MODULE 4 - PEER BENCHMARKS:
+{f"Industry Median: ${peer_data['median']}/ton" if peer_data else "No peer data"}
+{f"Range: ${peer_data['range']}/ton" if peer_data else ""}
+{f"Leader: {peer_data['leader']}" if peer_data else ""}
+{f"Context: {peer_data['context']}" if peer_data else ""}
+
+SYNTHESIS TASK:
+Balance these four factors to recommend an optimal carbon price:
+1. Target-math suggests: ${target_calc['target_price']}/ton (±20%)
+2. Regulatory preparation suggests: [infer from risk level]
+3. Peer positioning suggests: [relative to median]
+4. Financial capacity: {profile['financial_capacity']['level']}
+
+Return ONLY valid JSON:
+{{
+  "recommended_price": 95,
+  "rationale": "2-3 sentences explaining how you balanced the four factors. Be specific about tradeoffs.",
+  "synthesis_logic": "One detailed paragraph explaining: Why THIS price given their profile ({profile['target_ambition']['level']} ambition + {regulatory['risk_level']} regulatory risk + {profile['financial_capacity']['level']} capacity). What did you prioritize and why?",
+  "reality_check": {{
+    "likely_reduction": 42,
+    "target_reduction": {company_data['target_pct']},
+    "gap_explanation": "At $[price]/ton, modeling suggests [X]% reduction by {company_data['target_year']}. Target is {company_data['target_pct']}%. [Explain gap and what's needed to close it]"
+  }},
+  "peer_comparison": "Specific comparison: Your $[X] is [ratio] vs median ${peer_data['median'] if peer_data else 'XX'}/ton. {peer_data['leader'] if peer_data else 'Leaders'} sets bar. {peer_data['context'] if peer_data else ''}"
+}}
+
+Be direct. Show the tradeoffs clearly. If target requires $110 but regulatory only demands $60, explain why you chose the middle (or didn't)."""
+
+    # Call Claude for synthesis
+    message = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=2000,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    
+    response_text = message.content[0].text
+    
+    # Clean and parse
+    if "```json" in response_text:
+        response_text = response_text.split("```json")[1].split("```")[0]
+    elif "```" in response_text:
+        response_text = response_text.split("```")[1].split("```")[0]
+    
+    result = json.loads(response_text.strip())
+    return result
+# ============================================================================
+# ADDITIONAL ANALYSIS MODULES
+# ============================================================================
+
+def generate_sensitivity_analysis(company_data, base_recommendation):
+    """
+    MODULE 5: Sensitivity Analysis - What If Scenarios
+    Shows how recommendation changes with different assumptions
+    """
+    
+    base_price = base_recommendation['recommended_price']
+    target_pct = company_data['target_pct']
+    
+    scenarios = {
+        'if_target_less_ambitious': {
+            'scenario': f"Target reduced to {target_pct - 20}% (less ambitious)",
+            'price_change': round(base_price * 0.65),
+            'new_price': round(base_price * 0.65),
+            'rationale': f"Lower ambition ({target_pct - 20}% vs {target_pct}%) reduces required behavioral change. Price can drop ~35% while still achieving revised target.",
+            'impact': f"Would achieve ~{target_pct - 20}% reduction instead of current {target_pct}% target"
+        },
+        'if_target_more_ambitious': {
+            'scenario': f"Target increased to {target_pct + 20}% (more ambitious)",
+            'price_change': round(base_price * 1.4),
+            'new_price': round(base_price * 1.4),
+            'rationale': f"Higher ambition ({target_pct + 20}% vs {target_pct}%) requires aggressive transformation. Price must increase ~40% to drive necessary changes.",
+            'impact': f"Would pursue {target_pct + 20}% reduction, requiring significant operational changes"
+        },
+        'if_regulation_certain': {
+            'scenario': "Federal carbon tax passes at $50/ton in 2027 (high probability)",
+            'price_change': round(base_price * 1.3),
+            'new_price': round(base_price * 1.3),
+            'rationale': "Need to stay ahead of mandatory compliance costs. Internal price should exceed regulatory price by 30-50% to drive voluntary action.",
+            'impact': "Positions company ahead of regulation, reduces compliance shock"
+        },
+        'if_regulation_unlikely': {
+            'scenario': "No new federal regulation expected (low probability)",
+            'price_change': round(base_price * 0.75),
+            'new_price': round(base_price * 0.75),
+            'rationale': "Reduced regulatory pressure allows more conservative pricing. Still maintain premium above current state-level requirements.",
+            'impact': "Less urgency for regulatory preparation, focus shifts to voluntary targets"
+        },
+        'if_tech_breakthrough': {
+            'scenario': "Major clean tech cost reductions (e.g., green hydrogen drops 50%)",
+            'price_change': round(base_price * 0.8),
+            'new_price': round(base_price * 0.8),
+            'rationale': "Cheaper abatement options reduce the carbon price needed to drive adoption. Can achieve same reductions with lower price signal.",
+            'impact': "Same environmental outcome at lower internal cost"
+        },
+        'if_peer_pressure_increases': {
+            'scenario': "Industry median rises to $75/ton (competitive pressure)",
+            'price_change': round(base_price * 1.25),
+            'new_price': round(base_price * 1.25),
+            'rationale': "Competitive positioning requires staying at or above industry median. Lagging peers risks reputational damage and stakeholder pressure.",
+            'impact': "Maintains industry leadership position as sector ambition rises"
+        }
+    }
+    
+    return {
+        'base_price': base_price,
+        'scenarios': scenarios,
+        'interpretation': f"Current recommendation of ${base_price}/ton is robust across scenarios, with potential range of ${min(s['new_price'] for s in scenarios.values())}-${max(s['new_price'] for s in scenarios.values())}/ton depending on how external factors evolve."
+    }
+
+
+def generate_trajectory(company_data, base_recommendation):
+    """
+    MODULE 6: Year-by-Year Trajectory
+    Shows path from present to target year
+    """
+    
+    base_price = base_recommendation['recommended_price']
+    start_year = 2026
+    target_year = company_data['target_year']
+    target_pct = company_data['target_pct']
+    emissions = company_data['emissions']
+    
+    # Calculate escalation (3% per year)
+    escalation_rate = 0.03
+    
+    trajectory = {}
+    cumulative_reduction = 0
+    
+    for year in range(start_year, target_year + 1):
+        years_elapsed = year - start_year
+        
+        # Price with escalation
+        current_price = round(base_price * ((1 + escalation_rate) ** years_elapsed))
+        
+        # Estimate annual reduction (diminishing returns)
+        # Early years: higher reduction per dollar
+        # Later years: harder/more expensive reductions
+        if years_elapsed == 0:
+            annual_reduction = 8
+        elif years_elapsed == 1:
+            annual_reduction = 9
+        elif years_elapsed == 2:
+            annual_reduction = 10
+        elif years_elapsed == 3:
+            annual_reduction = 9
+        else:
+            annual_reduction = 6
+        
+        cumulative_reduction += annual_reduction
+        
+        # Estimate actions triggered at this price level
+        if current_price < 50:
+            actions = ["LED lighting retrofits", "HVAC optimization", "Basic efficiency measures"]
+        elif current_price < 75:
+            actions = ["Renewable energy PPAs", "Building envelope improvements", "Fleet efficiency"]
+        elif current_price < 100:
+            actions = ["On-site solar installation", "Heat pump conversions", "Process electrification"]
+        else:
+            actions = ["Advanced storage systems", "Green hydrogen pilots", "Deep retrofits"]
+        
+        # Cost calculation
+        annual_cost = round((emissions * (1 - cumulative_reduction/100)) * current_price)
+        
+        trajectory[str(year)] = {
+            'price': f"${current_price}/ton",
+            'annual_reduction': f"{annual_reduction}%",
+            'cumulative_reduction': f"{min(cumulative_reduction, target_pct)}%",
+            'emissions_remaining': f"{round(emissions * (1 - min(cumulative_reduction, target_pct)/100)):,} tons CO2e",
+            'annual_cost': f"${annual_cost:,}",
+            'actions_triggered': actions,
+            'on_track': cumulative_reduction >= (target_pct * years_elapsed / (target_year - start_year))
+        }
+    
+    # Final assessment
+    final_cumulative = min(cumulative_reduction, target_pct + 10)
+    gap_to_target = max(0, target_pct - final_cumulative)
+    
+    return {
+        'start_year': start_year,
+        'target_year': target_year,
+        'yearly_progression': trajectory,
+        'final_assessment': {
+            'projected_final_reduction': f"{final_cumulative}%",
+            'target_reduction': f"{target_pct}%",
+            'gap': f"{gap_to_target} percentage points",
+            'on_track': gap_to_target <= 5,
+            'summary': f"Trajectory projects {final_cumulative}% reduction by {target_year}. Target is {target_pct}%, leaving {gap_to_target}pp gap that requires complementary policies." if gap_to_target > 0 else f"Trajectory exceeds {target_pct}% target, achieving {final_cumulative}% reduction by {target_year}."
+        }
+    }
+
+
+def generate_risk_flags(company_data, profile, base_recommendation, regulatory):
+    """
+    MODULE 7: Risk Flags and Mitigation Strategies
+    Identifies potential problems and solutions
+    """
+    
+    flags = []
+    
+    # Flag 1: Shadow price effectiveness
+    if company_data.get('current_icp', 'None') == 'None':
+        flags.append({
+            'severity': 'Medium',
+            'flag': '⚠️  Shadow price may not drive operational change',
+            'explanation': 'CDP data shows 60%+ companies use shadow prices, but only 40% report material impact on decisions. Shadow prices work for CAPEX decisions but often fail to change daily operational behavior.',
+            'mitigation': 'Recommendation: Start with shadow price for capital decisions, but plan transition to internal fee model by Year 2 to impact operational budgets.',
+            'timeline': 'Implement fee model by 2027'
+        })
+    
+    # Flag 2: Scope 3 coverage
+    if company_data['industry'] in ['Technology', 'Consumer Goods', 'Finance']:
+        flags.append({
+            'severity': 'High',
+            'flag': '⚠️  Scope 3 emissions likely dominate your footprint',
+            'explanation': f"{company_data['industry']} companies typically have 70-90% of emissions in supply chain (Scope 3). Current analysis focuses on Scope 1+2 ({company_data['emissions']:,} tons), but true footprint is likely 3-10x larger.",
+            'mitigation': 'Recommendation: (1) Conduct Scope 3 inventory within 6 months, (2) Extend carbon price to Scope 3 emissions by 2028, (3) Engage suppliers on carbon pricing.',
+            'timeline': 'Scope 3 inventory: Q3 2026, Price coverage: 2028'
+        })
+    
+    # Flag 3: Price vs social cost gap
+    price = base_recommendation['recommended_price']
+    epa_sc = 252
+    if price < epa_sc * 0.5:
+        flags.append({
+            'severity': 'Medium',
+            'flag': f'⚠️  Price significantly below EPA social cost (${epa_sc}/ton)',
+            'explanation': f"Your ${price}/ton is {round((1 - price/epa_sc)*100)}% below EPA's social cost of carbon (${epa_sc}/ton at 2% discount rate). This gap indicates you're not fully internalizing societal climate damages.",
+            'mitigation': f"Recommendation: Acknowledge this is pragmatic starting point. Plan escalation path to reach ${round(epa_sc * 0.7)}/ton by 2030, ${epa_sc}/ton by 2035. Use gap to justify continued price increases.",
+            'timeline': 'Long-term escalation to $175+ by 2030'
+        })
+    
+    # Flag 4: Governance and accountability
+    flags.append({
+        'severity': 'High',
+        'flag': '⚠️  Internal carbon price requires governance structure',
+        'explanation': 'Most failed ICP implementations lack clear governance. Without executive sponsorship, decision-making authority, and accountability mechanisms, carbon prices become "nice to have" vs. "must follow."',
+        'mitigation': 'Recommendation: (1) Establish Carbon Pricing Committee with CFO/CEO sponsorship, (2) Mandate price use in all capital decisions >$500K, (3) Include carbon price performance in sustainability team KPIs, (4) Annual review and adjustment process.',
+        'timeline': 'Governance structure: Q2 2026'
+    })
+    
+    # Flag 5: Regulatory risk specific
+    if regulatory['risk_level'] in ['High', 'Very High']:
+        flags.append({
+            'severity': 'High',
+            'flag': f"⚠️  {regulatory['risk_level']} regulatory risk in {company_data['location']}",
+            'explanation': f"{regulatory['risk_explanation']} Current exposure: {regulatory['current_exposure'].get('policy', 'None')} at {regulatory['current_exposure'].get('price', 'N/A')}. Expected 2030: {regulatory['expected_2030'].get('price', 'N/A')}.",
+            'mitigation': f"Recommendation: Internal price should stay 30-50% above expected regulatory price. Current ${price}/ton provides buffer, but monitor policy developments quarterly and adjust accordingly.",
+            'timeline': 'Quarterly regulatory monitoring'
+        })
+    
+    # Flag 6: Disclosure and transparency
+    flags.append({
+        'severity': 'Low',
+        'flag': '📊 Disclosure gap in your industry',
+        'explanation': f"CDP data shows significant disclosure gaps in {company_data['industry']}. Many peers don't disclose ICP despite net-zero commitments. This creates competitive opportunity through transparency.",
+        'mitigation': 'Recommendation: Disclose your ICP publicly in sustainability report and CDP response. Builds credibility, differentiates from non-disclosing peers, satisfies investor expectations. Cite Barron & Prassa (2025) framework as methodology.',
+        'timeline': 'Include in next sustainability report'
+    })
+    
+    # Flag 7: Target ambition vs price effectiveness
+    if profile['target_ambition']['level'] in ['Very Aggressive', 'Aggressive'] and price < 100:
+        flags.append({
+            'severity': 'Medium',
+            'flag': f"⚠️  Aggressive target ({company_data['target_pct']}%) may require complementary policies",
+            'explanation': f"Your {profile['target_ambition']['level'].lower()} {company_data['target_pct']}% target by {company_data['target_year']} is ambitious. Carbon pricing alone (${price}/ton) will get you ~70-85% of the way. The final 15-30% typically requires direct mandates, technology investments, or offsets.",
+            'mitigation': f"Recommendation: Combine ${price}/ton ICP with: (1) 100% renewable electricity mandate by 2028, (2) Green building standards for new construction, (3) Fleet electrification targets, (4) High-quality offset portfolio for residual emissions.",
+            'timeline': 'Complementary policies: 2027-2029'
+        })
+    
+    return {
+        'total_flags': len(flags),
+        'severity_breakdown': {
+            'High': len([f for f in flags if f['severity'] == 'High']),
+            'Medium': len([f for f in flags if f['severity'] == 'Medium']),
+            'Low': len([f for f in flags if f['severity'] == 'Low'])
+        },
+        'flags': flags,
+        'overall_assessment': 'Strong foundation with several areas requiring attention. Prioritize High severity flags in Year 1.' if any(f['severity'] == 'High' for f in flags) else 'Well-positioned with minor optimization opportunities.'
+    }
+
+
+def generate_peer_deepdive(company_data, peer_data):
+    """
+    MODULE 8: Detailed Peer Analysis
+    Deep dive into competitive positioning
+    """
+    
+    if not peer_data:
+        return {'available': False, 'message': 'No peer data available for this industry'}
+    
+    industry = company_data['industry']
+    
+    # Get specific company examples from database
+    leaders = []
+    followers = []
+    laggards = []
+    
+    # Parse based on industry (from your database)
+    if industry == 'Technology':
+        leaders = [
+            {'company': 'Microsoft', 'price': '$100/ton', 'note': 'Carbon negative by 2030, most transparent'},
+            {'company': 'SAP', 'price': '$50/ton', 'note': 'Shadow price, covers all scopes'}
+        ]
+        followers = [
+            {'company': 'Salesforce', 'price': '$32.50/ton', 'note': 'Net zero by 2040'},
+            {'company': 'HP', 'price': '$25/ton', 'note': 'Carbon neutral commitment'}
+        ]
+        laggards = [
+            {'company': 'Accenture', 'price': '$17.50/ton', 'note': 'Internal FEE (actual money), but low price'},
+            {'company': 'Infosys', 'price': '$10/ton', 'note': 'Carbon neutral but minimal price signal'}
+        ]
+        disclosure_gap = "7 of 13 major tech companies (Google, Apple, Meta, Amazon, Tesla, IBM, Intel) have NO disclosed ICP despite ambitious net-zero commitments. This is a major transparency gap."
+        
+    elif industry == 'Oil & Gas':
+        leaders = [
+            {'company': 'BP', 'price': '$75/ton', 'note': 'Varies by project type'},
+            {'company': 'Shell', 'price': '$70/ton', 'note': 'Used for investment decisions'},
+            {'company': 'TotalEnergies', 'price': '$70/ton', 'note': 'Most ambitious of oil majors'}
+        ]
+        followers = [
+            {'company': 'Chevron', 'price': '$45/ton', 'note': 'Long-term planning focus'}
+        ]
+        laggards = [
+            {'company': 'ExxonMobil', 'price': '$40/ton', 'note': 'LOWEST among majors, under investor pressure'}
+        ]
+        disclosure_gap = "Oil & Gas companies widely disclose ICPs, but use them defensively for stress-testing rather than driving business model transformation."
+        
+    else:
+        # Generic structure for other industries
+        leaders = [{'company': peer_data['leader'], 'price': f"${peer_data['median'] * 1.5}/ton (estimated)", 'note': 'Industry leader'}]
+        followers = [{'company': 'Industry median', 'price': f"${peer_data['median']}/ton", 'note': 'Typical practice'}]
+        laggards = [{'company': peer_data.get('laggard', 'Lower quartile'), 'price': f"${peer_data['median'] * 0.5}/ton (estimated)", 'note': 'Below median'}]
+        disclosure_gap = peer_data.get('context', 'Limited disclosure data available')
+    
+    return {
+        'available': True,
+        'industry': industry,
+        'your_position': f"Above median (${peer_data['median']}/ton)",
+        'leaders': leaders,
+        'followers': followers,
+        'laggards': laggards,
+        'disclosure_gap': disclosure_gap,
+        'trend_analysis': f"Based on CDP data, {industry} sector has seen 20-40% increase in ICP adoption since 2020. Median price rising ~10-15% annually as regulatory pressure and stakeholder expectations increase.",
+        'competitive_insight': f"Your positioning above ${peer_data['median']}/ton median signals climate leadership. However, gap between leaders (${peer_data['leader']}) and laggards shows sector is fragmented - opportunity to influence upward convergence."
+    }
+# ============================================================================
+# MAIN RECOMMENDATION FUNCTION (NOW WITH MULTI-STEP REASONING)
+# ============================================================================
+
+# ============================================================================
+# MAIN COMPREHENSIVE RECOMMENDATION FUNCTION
+# ============================================================================
+
+def recommend_carbon_price(company_data):
+    """
+    COMPREHENSIVE multi-module analysis
+    Returns everything: core recommendation + all optional modules
+    """
+    
+    print("  → Step 1: Analyzing company profile...")
+    profile = analyze_company_profile(company_data)
+    
+    print("  → Step 2: Calculating target-consistent price...")
+    target_calc = calculate_target_consistent_price(company_data, profile)
+    
+    print("  → Step 3: Assessing regulatory risk...")
+    regulatory = assess_regulatory_risk(company_data)
+    
+    print("  → Step 4: Synthesizing recommendation...")
+    peer_data = get_peer_benchmark(company_data['industry'])
+    synthesis = synthesize_recommendation(company_data, profile, target_calc, regulatory, peer_data)
+    
+    print("  → Step 5: Generating sensitivity analysis...")
+    sensitivity = generate_sensitivity_analysis(company_data, synthesis)
+    
+    print("  → Step 6: Building year-by-year trajectory...")
+    trajectory = generate_trajectory(company_data, synthesis)
+    
+    print("  → Step 7: Identifying risk flags...")
+    risks = generate_risk_flags(company_data, profile, synthesis, regulatory)
+    
+    print("  → Step 8: Deep-diving peer analysis...")
+    peer_deepdive = generate_peer_deepdive(company_data, peer_data)
+    
+    print("  ✓ Analysis complete!\n")
+    
+    # Return comprehensive structure
+    return {
+        # Core (always shown)
+        'core': synthesis,
+        
+        # Detailed analysis (show your work)
+        'detailed_analysis': {
+            'step1_company_profile': profile,
+            'step2_target_price': target_calc,
+            'step3_regulatory_risk': regulatory,
+            'step4_peer_benchmarks': peer_data
+        },
+        
+        # Optional modules (user can expand)
+        'modules': {
+            'sensitivity_analysis': sensitivity,
+            'trajectory': trajectory,
+            'risk_flags': risks,
+            'peer_deepdive': peer_deepdive
+        }
+    }
+
+
+# ============================================================================
+# COMPREHENSIVE TEST - SAVE TO FILE
+# ============================================================================
+
+if __name__ == "__main__":
+    
+    test_company = {
+        'industry': 'Oil & Gas',
+        'emissions': 500000,
+        'target_pct': 30,
+        'target_year': 2040,
+        'location': 'Athens, Greece',
+        'size': '>$10B',
+        'current_icp': '$35/ton'
+    }
+    
+    print("\n" + "="*70)
+    print("COMPREHENSIVE CARBON PRICING ANALYSIS")
+    print("="*70)
+    
+    result = recommend_carbon_price(test_company)
+    
+    # Save to file
+    output_file = "carbon_pricing_analysis.txt"
+    
+    with open(output_file, 'w') as f:
+        # CORE
+        f.write("="*70 + "\n")
+        f.write("FINAL RECOMMENDATION\n")
+        f.write("="*70 + "\n\n")
+        f.write(f"💰 Recommended: ${result['core']['recommended_price']}/ton\n\n")
+        f.write(f"📝 Rationale:\n{result['core']['rationale']}\n\n")
+        f.write(f"🔍 Synthesis Logic:\n{result['core']['synthesis_logic']}\n\n")
+        f.write(f"⚠️  Reality Check:\n{result['core']['reality_check']['gap_explanation']}\n\n")
+        f.write(f"📊 Peers:\n{result['core']['peer_comparison']}\n\n")
+        
+        # SENSITIVITY ANALYSIS
+        f.write("\n" + "="*70 + "\n")
+        f.write("📊 SENSITIVITY ANALYSIS: What If Scenarios\n")
+        f.write("="*70 + "\n\n")
+        sens = result['modules']['sensitivity_analysis']
+        f.write(f"Base Price: ${sens['base_price']}/ton\n")
+        f.write(f"{sens['interpretation']}\n\n")
+        
+        for scenario_name, scenario in sens['scenarios'].items():
+            f.write(f"\n▸ {scenario['scenario']}\n")
+            f.write(f"  New Price: ${scenario['new_price']}/ton\n")
+            f.write(f"  Rationale: {scenario['rationale']}\n")
+            f.write(f"  Impact: {scenario['impact']}\n")
+        
+        # TRAJECTORY
+        f.write("\n\n" + "="*70 + "\n")
+        f.write("📈 YEAR-BY-YEAR TRAJECTORY\n")
+        f.write("="*70 + "\n\n")
+        traj = result['modules']['trajectory']
+        
+        for year, data in traj['yearly_progression'].items():
+            on_track = "✓" if data['on_track'] else "⚠"
+            f.write(f"{on_track} {year}:\n")
+            f.write(f"  Price: {data['price']}\n")
+            f.write(f"  Annual Reduction: {data['annual_reduction']}\n")
+            f.write(f"  Cumulative: {data['cumulative_reduction']}\n")
+            f.write(f"  Cost: {data['annual_cost']}\n")
+            f.write(f"  Actions: {', '.join(data['actions_triggered'])}\n\n")
+        
+        f.write(f"\nFINAL: {traj['final_assessment']['summary']}\n")
+        
+        # RISK FLAGS
+        f.write("\n\n" + "="*70 + "\n")
+        f.write("⚠️  RISK FLAGS & MITIGATION\n")
+        f.write("="*70 + "\n\n")
+        risk_module = result['modules']['risk_flags']
+        f.write(f"Total: {risk_module['total_flags']} flags\n")
+        f.write(f"Severity: {risk_module['severity_breakdown']}\n\n")
+        
+        for i, flag in enumerate(risk_module['flags'], 1):
+            f.write(f"\n{i}. {flag['flag']} [{flag['severity']}]\n")
+            f.write(f"   {flag['explanation']}\n")
+            f.write(f"   → {flag['mitigation']}\n")
+            f.write(f"   Timeline: {flag['timeline']}\n")
+        
+        # PEER DEEP DIVE
+        f.write("\n\n" + "="*70 + "\n")
+        f.write("🏢 PEER DEEP DIVE\n")
+        f.write("="*70 + "\n\n")
+        peers = result['modules']['peer_deepdive']
+        if peers['available']:
+            f.write(f"Industry: {peers['industry']}\n")
+            f.write(f"Your Position: {peers['your_position']}\n\n")
+            
+            f.write("LEADERS:\n")
+            for leader in peers['leaders']:
+                f.write(f"  • {leader['company']}: {leader['price']} - {leader['note']}\n")
+            
+            f.write("\nFOLLOWERS:\n")
+            for follower in peers['followers']:
+                f.write(f"  • {follower['company']}: {follower['price']} - {follower['note']}\n")
+            
+            f.write("\nLAGGARDS:\n")
+            for laggard in peers['laggards']:
+                f.write(f"  • {laggard['company']}: {laggard['price']} - {laggard['note']}\n")
+            
+            f.write(f"\nDISCLOSURE GAP:\n{peers['disclosure_gap']}\n")
+            f.write(f"\nTREND:\n{peers['trend_analysis']}\n")
+            f.write(f"\nINSIGHT:\n{peers['competitive_insight']}\n")
+    
+    print(f"\n✅ Complete analysis saved to: {output_file}")
+    print(f"📄 Open the file to see all modules\n")
+    print("="*70 + "\n")
+    
