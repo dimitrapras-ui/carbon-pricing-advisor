@@ -217,10 +217,27 @@
     </div>
     
     <script>
-        document.getElementById('carbonForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Form submitted! Next step: connect to Python backend');
-            // We'll add the real connection in the next step
+    document.getElementById('carbonForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const formData = {
+            industry: document.getElementById('industry').value,
+            emissions: document.getElementById('emissions').value,
+            target_pct: document.getElementById('target_pct').value,
+            target_year: document.getElementById('target_year').value,
+            location: document.getElementById('location').value,
+            size: document.getElementById('size').value,
+            current_icp: document.getElementById('current_icp').value || 'None'
+        };
+        
+        // Save to localStorage
+        localStorage.setItem('carbonPricingData', JSON.stringify(formData));
+        
+        // Navigate to results
+        window.location.href = 'results.html';
+    });
+</script>
         });
     </script>
 </body>
